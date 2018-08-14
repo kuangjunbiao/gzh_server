@@ -1,0 +1,18 @@
+# 服务配置
+server:
+ # 服务端口
+  port: 8066
+  error:
+    path: /error
+  tomcat:
+    max-threads: 1000
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://127.0.0.1:5432/forever
+    username: postgres
+    password: forever888
+
+forever:
+  defaultPassword: 12345678

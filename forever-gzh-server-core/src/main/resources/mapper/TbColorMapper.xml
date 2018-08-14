@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gaoan.forever.mapper.TbColorMapper">
+
+    <!-- Result Map -->
+    <resultMap id="BaseResultMap" type="com.gaoan.forever.entity.TbColorEntity" >
+        <result column="id" property="id" javaType="Long"/>
+        <result column="color_name" property="colorName" javaType="String"/>
+        <result column="create_time" property="createTime" javaType="java.util.Date"/>
+    </resultMap>
+
+    <!-- 通用查询结果列-->
+    <sql id="Base_Column_List">
+	id,color_name,create_time
+    </sql>
+    <!-- 通用WHERE条件 -->
+    <sql id="Base_where_List">
+        WHERE 1=1
+        <if test="id != null">
+            AND id = #{id}
+        </if>
+        <if test="colorName != null and colorName != ''">
+            AND color_name = #{colorName}
+        </if>
+        <if test="createTime != null">
+            AND create_time = #{createTime}
+        </if>
+    </sql>
+    
+    <!-- 查询(根据主键ID查询) -->
+    <select id="queryByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_color
+        WHERE id = #{id}
+    </select>
+
+    <!-- 查询（根据实体查询） -->
+    <select id="queryInfoByEntity"  parameterType="com.gaoan.forever.entity.TbColorEntity" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_color
+        <include refid="Base_where_List" />
+    </select>
+
+    <!-- 查询记录列表 -->
+    <select id="queryAllByParams" parameterType="map" resultType="map">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_color
+        <include refid="Base_where_List" />
+        <if test="pager.orderCondition != null and pager.orderCondition != ''" >
+            ${pager.orderCondition}
+        </if>
+    </select>
+
+    <!-- 查询记录列表 -->
+    <select id="queryAll" parameterType="com.gaoan.forever.entity.TbColorEntity" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_color
+        <include refid="Base_where_List" />
+        ORDER BY id
+    </select>
+
+    <!-- 查询记录总数 -->
+    <select id="queryCountByParams" resultType="java.lang.Long" parameterType="map">
+        SELECT COUNT(1) FROM tb_color
+        <include refid="Base_where_List" />
+    </select>
+
+    <!-- 查询记录列表(分页) -->
+    <select id="queryListByParams" parameterType="map" resultType="map">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_color
+        <include refid="Base_where_List" />
+    </select>
+
+    <!-- 查询记录总数 -->
+    <select id="queryCount" resultType="java.lang.Long" parameterType="com.gaoan.forever.entity.TbColorEntity">
+        SELECT COUNT(1) FROM tb_color
+        <include refid="Base_where_List" />
+    </select>
+    
+    <!-- 添加 -->
+    <insert id="insert" parameterType="com.gaoan.forever.entity.TbColorEntity" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_color
+        (color_name,create_time)
+        VALUES
+        (#{colorName},#{createTime})
+    </insert>
+
+    <!-- 添加 (匹配有值的字段)-->
+    <insert id="insertSelective" parameterType="com.gaoan.forever.entity.TbColorEntity" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_color
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="colorName != null and colorName != ''"> 
+            color_name,
+            </if>
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="colorName != null and colorName != ''"> 
+            #{colorName},
+            </if>
+            now()
+        </trim>
+    </insert>
+
+    <!-- 修 改 (匹配有值的字段)-->
+    <update id="updateByPrimaryKeySelective" parameterType="com.gaoan.forever.entity.TbColorEntity">
+        UPDATE tb_color
+        <set>
+            <if test="colorName != null and colorName != ''">
+            color_name = #{colorName},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 修 改-->
+    <update id="updateByPrimaryKey" parameterType="com.gaoan.forever.entity.TbColorEntity">
+        UPDATE tb_color
+        <set>
+            color_name = #{colorName}
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!--根据主键删除-->
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        DELETE FROM tb_color WHERE id = #{id}
+    </delete>
+    
+</mapper>

@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gaoan.forever.mapper.TbSalesOrderMapper">
+
+    <!-- Result Map -->
+    <resultMap id="BaseResultMap" type="com.gaoan.forever.entity.TbSalesOrderEntity" >
+        <result column="id" property="id" javaType="Long"/>
+        <result column="goods_id" property="goodsId" javaType="Long"/>
+        <result column="color_id" property="colorId" javaType="Long"/>
+        <result column="size_id" property="sizeId" javaType="Long"/>
+        <result column="tag_price" property="tagPrice" javaType="java.math.BigDecimal"/>
+        <result column="sell_price" property="sellPrice" javaType="java.math.BigDecimal"/>
+        <result column="quantity" property="quantity" javaType="Long"/>
+        <result column="total" property="total" javaType="java.math.BigDecimal"/>
+        <result column="pay_type" property="payType" javaType="Integer"/>
+        <result column="user_id" property="userId" javaType="Long"/>
+        <result column="remark" property="remark" javaType="String"/>
+        <result column="create_time" property="createTime" javaType="java.util.Date"/>
+        <result column="update_time" property="updateTime" javaType="java.util.Date"/>
+    </resultMap>
+    
+    <resultMap id="SalesResultMap" type="com.gaoan.forever.model.result.SalesOrderInfoModel" >
+        <result column="id" property="id" javaType="Long"/>
+        <result column="purchase_order_name" property="purchaseOrderName" javaType="String"/>
+        <result column="goods_name" property="goodsName" javaType="String"/>
+        <result column="color_id" property="colorId" javaType="Long"/>
+        <result column="color_name" property="colorName" javaType="String"/>
+        <result column="size_id" property="sizeId" javaType="Long"/>
+        <result column="size_name" property="sizeName" javaType="String"/>
+        <result column="tag_price" property="tagPrice" javaType="java.math.BigDecimal"/>
+        <result column="sell_price" property="sellPrice" javaType="java.math.BigDecimal"/>
+        <result column="quantity" property="quantity" javaType="Long"/>
+        <result column="total" property="total" javaType="java.math.BigDecimal"/>
+        <result column="pay_type" property="payType" javaType="Integer"/>
+        <result column="user_id" property="userId" javaType="Long"/>
+        <result column="remark" property="remark" javaType="String"/>
+        <result column="real_name" property="realName" javaType="String"/>
+        <result column="create_time" property="createTime" javaType="java.util.Date"/>
+        <result column="update_time" property="updateTime" javaType="java.util.Date"/>
+    </resultMap>
+
+    <resultMap id="StatisticsResultMap" type="com.gaoan.forever.model.result.StatisticsInfoModel" >
+        <result column="date" property="date" javaType="String"/>
+        <result column="total" property="total" javaType="Long"/>
+        <result column="sell_price_total" property="sellPriceTotal" javaType="java.math.BigDecimal"/>
+        <result column="cost_price_total" property="costPriceTotal" javaType="java.math.BigDecimal"/>
+        <result column="sales_profit_total" property="salesProfitTotal" javaType="java.math.BigDecimal"/>
+    </resultMap>
+    
+    <resultMap id="ExportResultMap" type="com.gaoan.forever.model.export.ExportSalesOrderDetailModel" >
+        <result column="create_time" property="createTime" javaType="java.util.Date"/>
+        <result column="purchase_order_name" property="purchaseOrderName" javaType="String"/>
+        <result column="goods_name" property="goodsName" javaType="String"/>
+        <result column="color_name" property="colorName" javaType="String"/>
+        <result column="size_name" property="sizeName" javaType="String"/>
+        <result column="sell_price" property="sellPrice" javaType="java.math.BigDecimal"/>
+        <result column="quantity" property="quantity" javaType="Long"/>
+        <result column="avg_price" property="avgPrice" javaType="java.math.BigDecimal"/>
+        <result column="profit" property="profit" javaType="java.math.BigDecimal"/>
+        <result column="real_name" property="realName" javaType="String"/>
+    </resultMap>
+
+    <!-- 通用查询结果列-->
+    <sql id="Base_Column_List">
+	id,goods_id,color_id,size_id,tag_price,sell_price,quantity,total,pay_type,user_id,remark,create_time,update_time
+    </sql>
+    <!-- 通用WHERE条件 -->
+    <sql id="Base_where_List">
+        WHERE 1=1
+        <if test="id != null">
+            AND id = #{id}
+        </if>
+        <if test="goodsId != null">
+            AND goods_id = #{goodsId}
+        </if>
+        <if test="colorId != null">
+            AND color_id = #{colorId}
+        </if>
+        <if test="sizeId != null">
+            AND size_id = #{sizeId}
+        </if>
+        <if test="tagPrice != null">
+            AND tag_price = #{tagPrice}
+        </if>
+        <if test="sellPrice != null">
+            AND sell_price = #{sellPrice}
+        </if>
+        <if test="quantity != null">
+            AND quantity = #{quantity}
+        </if>
+        <if test="total != null">
+            AND total = #{total}
+        </if>
+        <if test="payType != null">
+            AND pay_type = #{payType}
+        </if>
+        <if test="userId != null">
+            AND user_id = #{userId}
+        </if>
+        <if test="remark != null and remark != ''">
+            AND remark = #{remark}
+        </if>
+        <if test="createTime != null">
+            AND create_time = #{createTime}
+        </if>
+        <if test="updateTime != null">
+            AND update_time = #{updateTime}
+        </if>
+    </sql>
+    
+    <!-- 查询(根据主键ID查询) -->
+    <select id="queryByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_sales_order
+        WHERE id = #{id}
+    </select>
+
+    <!-- 查询（根据实体查询） -->
+    <select id="queryInfoByEntity"  parameterType="com.gaoan.forever.entity.TbSalesOrderEntity" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_sales_order
+        <include refid="Base_where_List" />
+    </select>
+
+    <!-- 查询记录列表 -->
+    <select id="queryAllByParams" parameterType="map" resultType="map">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_sales_order
+        <include refid="Base_where_List" />
+        <if test="pager.orderCondition != null and pager.orderCondition != ''" >
+            ${pager.orderCondition}
+        </if>
+    </select>
+
+    <!-- 查询记录列表 -->
+    <select id="queryAll" parameterType="com.gaoan.forever.entity.TbSalesOrderEntity" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_sales_order
+        <include refid="Base_where_List" />
+        ORDER BY id desc
+    </select>
+
+    <!-- 查询记录总数 -->
+    <select id="queryCountByParams" resultType="java.lang.Long" parameterType="map">
+        SELECT COUNT(1) FROM tb_sales_order
+        <include refid="Base_where_List" />
+    </select>
+
+    <!-- 查询记录列表(分页) -->
+    <select id="queryListByParams" parameterType="map" resultType="map">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_sales_order
+        <include refid="Base_where_List" />
+    </select>
+
+    <!-- 查询记录总数 -->
+    <select id="queryCount" resultType="java.lang.Long" parameterType="com.gaoan.forever.entity.TbSalesOrderEntity">
+        SELECT COUNT(1) FROM tb_sales_order
+        <include refid="Base_where_List" />
+    </select>
+    
+    <!-- 根据条件查询出货信息 -->
+    <select id="querySalesOrder" parameterType="com.gaoan.forever.model.query.OrderQueryConditionModel" resultMap="SalesResultMap">
+		SELECT
+			tso.*,
+			ts.purchase_order_name,
+			ts.goods_name,
+			tu.real_name,
+			tc.color_name,
+			tsi.size_name
+		FROM
+			tb_sales_order tso
+		INNER JOIN tb_stock ts
+		ON tso.goods_id = ts."id"
+		AND tso.color_id = ts.color_id
+		AND tso.size_id = ts.size_id
+		INNER JOIN tb_color tc
+		ON tso.color_id = tc."id"
+		INNER JOIN tb_size tsi
+    	ON tso.size_id = tsi."id"
+		INNER JOIN tb_user tu
+		ON tso.user_id = tu.id
+		WHERE
+			1 = 1
+		<if test="purchaseOrderName != null and purchaseOrderName != ''">
+			AND ts.purchase_order_name = #{purchaseOrderName}
+		</if>	
+		<if test="goodsName != null and goodsName != ''">
+			AND ts.goods_name = #{goodsName}
+		</if>
+		<if test="colorId != null">
+			AND ts.color_id = #{colorId}
+		</if>
+		<if test="sizeId != null">
+			AND ts.size_id = #{sizeId}
+		</if>
+		<if test="payType != null">
+			AND tso.pay_type = #{payType}
+		</if>
+		<if test="userId != null">
+			AND tso.user_id = #{userId}
+		</if>
+		<if test="startTime != null and startTime != ''">
+			<![CDATA[AND to_char(tso.create_time, 'yyyy-MM-dd') >= #{startTime}]]>
+		</if>
+		<if test="endTime != null and endTime != ''">
+			<![CDATA[ AND to_char(tso.create_time, 'yyyy-MM-dd') <= #{endTime} ]]>
+		</if>
+		ORDER BY tso.update_time DESC
+    </select>
+
+    <!-- 根据条件查询出货详情 -->
+    <select id="querySalesDetail" parameterType="java.lang.Long" resultMap="SalesResultMap">
+		SELECT
+			tso.*,
+			ts.purchase_order_name,
+			ts.goods_name,
+			tu.real_name,
+			tc.color_name,
+			tsi.size_name
+		FROM
+			tb_sales_order tso
+		INNER JOIN tb_stock ts
+		ON tso.goods_id = ts."id"
+		AND tso.color_id = ts.color_id
+		AND tso.size_id = ts.size_id
+		INNER JOIN tb_color tc
+		ON tso.color_id = tc."id"
+		INNER JOIN tb_size tsi
+    	ON tso.size_id = tsi."id"
+		INNER JOIN tb_user tu
+		ON tso.user_id = tu.id
+		WHERE tso.id = #{id}
+    </select>
+    
+    <!-- 根据条件查询出货详情 -->
+    <select id="queryStatisticsInfo" resultMap="StatisticsResultMap">
+		SELECT
+			#{date} date,
+			SUM (quantity) total,
+			SUM (sell_price * quantity) sell_price_total,
+			SUM (avg_price * quantity) cost_price_total,
+			SUM (profit) sales_profit_total
+		FROM
+			(
+				SELECT
+					ts.purchase_order_name,
+					ts.goods_name,
+					tso.sell_price,
+					tso.quantity,
+					ts.avg_price,
+					(tso.sell_price - ts.avg_price) * tso.quantity profit
+				FROM
+					tb_sales_order tso
+				INNER JOIN tb_stock ts ON tso.goods_id = ts."id"
+				AND tso.color_id = ts.color_id
+				AND tso.size_id = ts.size_id
+				INNER JOIN tb_user tu ON tso.user_id = tu."id"
+				WHERE 1 = 1
+				<if test="userId != null">
+					AND tso.user_id = #{userId}
+				</if>
+				<if test="type == 1">
+					AND to_char(tso.create_time,'yyyy-MM-dd') = #{date}
+				</if>
+				<if test="type == 2">
+					AND to_char(tso.create_time,'yyyy-MM') = #{date}
+				</if>
+				<if test="type == 3">
+					AND to_char(tso.create_time,'yyyy') = #{date}
+				</if>
+				ORDER by tso.create_time DESC
+			) t
+    </select>
+    
+    <!-- 根据条件查询出货详情 -->
+    <select id="queryExportData" resultMap="ExportResultMap">
+			SELECT
+			    tso.create_time,
+				ts.purchase_order_name,
+				ts.goods_name,
+				tc.color_name,
+				tsi.size_name,
+				tso.sell_price,
+				tso.quantity,
+				ts.avg_price,
+				(tso.sell_price - ts.avg_price) * tso.quantity profit,
+        		tu.real_name
+			FROM
+				tb_sales_order tso
+			INNER JOIN tb_stock ts ON tso.goods_id = ts."id"
+			AND tso.color_id = ts.color_id
+			AND tso.size_id = ts.size_id
+			INNER JOIN tb_color tc ON tso.color_id = tc."id"
+			INNER JOIN tb_size tsi ON tso.size_id = tsi."id"
+			INNER JOIN tb_user tu
+			ON tso.user_id = tu."id"
+				WHERE 1 = 1
+				<if test="userId != null">
+					AND tso.user_id = #{userId}
+				</if>
+				<if test="type == 1">
+					AND to_char(tso.create_time,'yyyy-MM-dd') = #{date}
+				</if>
+				<if test="type == 2">
+					AND to_char(tso.create_time,'yyyy-MM') = #{date}
+				</if>
+				<if test="type == 3">
+					AND to_char(tso.create_time,'yyyy') = #{date}
+				</if>
+			ORDER by tso.create_time
+    </select>
+
+    <!-- 添加 -->
+    <insert id="insert" parameterType="com.gaoan.forever.entity.TbSalesOrderEntity" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_sales_order
+        (goods_id,color_id,size_id,tag_price,sell_price,quantity,total,pay_type,user_id,remark,create_time,update_time)
+        VALUES
+        (#{goodsId},#{colorId},#{sizeId},#{tagPrice},#{sellPrice},#{quantity},#{total},#{payType},#{userId},#{remark},#{createTime},#{updateTime})
+    </insert>
+
+    <!-- 添加 (匹配有值的字段)-->
+    <insert id="insertSelective" parameterType="com.gaoan.forever.entity.TbSalesOrderEntity" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_sales_order
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="goodsId != null">
+            goods_id,
+            </if>
+            <if test="colorId != null">
+            color_id,
+            </if>
+            <if test="sizeId != null">
+            size_id,
+            </if>
+            <if test="tagPrice != null">
+            tag_price,
+            </if>
+            <if test="sellPrice != null">
+            sell_price,
+            </if>
+            <if test="quantity != null">
+            quantity,
+            </if>
+            <if test="total != null">
+            total,
+            </if>
+            <if test="payType != null">
+            pay_type,
+            </if>
+            <if test="userId != null">
+            user_id,
+            </if>
+            <if test="remark != null and remark != ''">
+            remark,
+            </if>
+            create_time,
+            update_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="goodsId != null">
+            #{goodsId},
+            </if>
+            <if test="colorId != null">
+            #{colorId},
+            </if>
+            <if test="sizeId != null">
+            #{sizeId},
+            </if>
+            <if test="tagPrice != null">
+            #{tagPrice},
+            </if>
+            <if test="sellPrice != null">
+            #{sellPrice},
+            </if>
+            <if test="quantity != null">
+            #{quantity},
+            </if>
+            <if test="total != null">
+            #{total},
+            </if>
+            <if test="payType != null">
+            #{payType},
+            </if>
+            <if test="userId != null">
+            #{userId},
+            </if>
+            <if test="remark != null and remark != ''">
+            #{remark},
+            </if>
+            now(),
+            now()
+        </trim>
+    </insert>
+
+    <!-- 修 改 (匹配有值的字段)-->
+    <update id="updateByPrimaryKeySelective" parameterType="com.gaoan.forever.entity.TbSalesOrderEntity">
+        UPDATE tb_sales_order
+        <set>
+            <if test="goodsId != null">
+            goods_id = #{goodsId},
+            </if>
+            <if test="colorId != null">
+            color_id = #{colorId},
+            </if>
+            <if test="sizeId != null">
+            size_id = #{sizeId},
+            </if>
+            <if test="tagPrice != null">
+            tag_price = #{tagPrice},
+            </if>
+            <if test="sellPrice != null">
+            sell_price = #{sellPrice},
+            </if>
+            <if test="quantity != null">
+            quantity = #{quantity},
+            </if>
+            <if test="total != null">
+            total = #{total},
+            </if>
+            <if test="payType != null">
+            pay_type = #{payType},
+            </if>
+            <if test="userId != null">
+            user_id = #{userId},
+            </if>
+            <if test="remark != null and remark != ''">
+            remark = #{remark},
+            </if>
+            <if test="createTime != null">
+            create_time = #{createTime},
+            </if>
+            update_time = now()
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 修 改-->
+    <update id="updateByPrimaryKey" parameterType="com.gaoan.forever.entity.TbSalesOrderEntity">
+        UPDATE tb_sales_order
+        <set>
+            goods_id = #{goodsId},
+            color_id = #{colorId},
+            size_id = #{sizeId},
+            tag_price = #{tagPrice},
+            sell_price = #{sellPrice},
+            quantity = #{quantity},
+            total = #{total},
+            pay_type = #{payType},
+            user_id = #{userId},
+            remark = #{remark},
+            create_time = #{createTime},
+            update_time = now()
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!--根据主键删除-->
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        DELETE FROM tb_sales_order WHERE id = #{id}
+    </delete>
+    
+</mapper>

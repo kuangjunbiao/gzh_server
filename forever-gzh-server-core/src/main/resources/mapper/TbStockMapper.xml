@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gaoan.forever.mapper.TbStockMapper">
+
+    <!-- Result Map -->
+    <resultMap id="BaseResultMap" type="com.gaoan.forever.entity.TbStockEntity" >
+        <result column="id" property="id" javaType="Long"/>
+        <result column="purchase_order_name" property="purchaseOrderName" javaType="String"/>
+        <result column="goods_name" property="goodsName" javaType="String"/>
+        <result column="color_id" property="colorId" javaType="Long"/>
+        <result column="size_id" property="sizeId" javaType="Long"/>
+        <result column="quantity" property="quantity" javaType="Long"/>
+        <result column="create_time" property="createTime" javaType="java.util.Date"/>
+        <result column="update_time" property="updateTime" javaType="java.util.Date"/>
+    </resultMap>
+    
+    <resultMap id="StockResultMap" type="com.gaoan.forever.model.result.StockInfoModel" >
+        <result column="id" property="id" javaType="Long"/>
+        <result column="purchase_order_name" property="purchaseOrderName" javaType="String"/>
+        <result column="goods_name" property="goodsName" javaType="String"/>
+        <result column="color_id" property="colorId" javaType="Long"/>
+        <result column="color_name" property="colorName" javaType="String"/>
+        <result column="size_id" property="sizeId" javaType="Long"/>
+        <result column="size_name" property="sizeName" javaType="String"/>
+        <result column="quantity" property="quantity" javaType="Long"/>
+        <result column="create_time" property="createTime" javaType="java.util.Date"/>
+        <result column="update_time" property="updateTime" javaType="java.util.Date"/>
+    </resultMap>
+
+    <!-- 通用查询结果列-->
+    <sql id="Base_Column_List">
+	id,purchase_order_name,goods_name,color_id,size_id,quantity,avg_price,create_time,update_time
+    </sql>
+    <!-- 通用WHERE条件 -->
+    <sql id="Base_where_List">
+        WHERE 1=1
+        <if test="id != null">
+            AND id = #{id}
+        </if>
+        <if test="purchaseOrderName != null and purchaseOrderName != ''">
+            AND purchase_order_name = #{purchaseOrderName}
+        </if>
+        <if test="goodsName != null and goodsName != ''">
+            AND goods_name = #{goodsName}
+        </if>
+        <if test="colorId != null">
+            AND color_id = #{colorId}
+        </if>
+        <if test="sizeId != null">
+            AND size_id = #{sizeId}
+        </if>
+        <if test="quantity != null">
+            AND quantity = #{quantity}
+        </if>
+        <if test="avgPrice != null">
+            AND avg_price = #{avgPrice}
+        </if>
+        <if test="createTime != null">
+            AND create_time = #{createTime}
+        </if>
+        <if test="updateTime != null">
+            AND update_time = #{updateTime}
+        </if>
+    </sql>
+    
+    <!-- 查询(根据主键ID查询) -->
+    <select id="queryByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_stock
+        WHERE id = #{id}
+    </select>
+
+    <!-- 查询（根据实体查询） -->
+    <select id="queryInfoByEntity"  parameterType="com.gaoan.forever.entity.TbStockEntity" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_stock
+        <include refid="Base_where_List" />
+    </select>
+
+    <!-- 查询记录列表 -->
+    <select id="queryAllByParams" parameterType="map" resultType="map">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_stock
+        <include refid="Base_where_List" />
+        <if test="pager.orderCondition != null and pager.orderCondition != ''" >
+            ${pager.orderCondition}
+        </if>
+    </select>
+
+    <!-- 查询记录列表 -->
+    <select id="queryAll" parameterType="com.gaoan.forever.entity.TbStockEntity" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_stock
+        <include refid="Base_where_List" />
+        ORDER BY id desc
+    </select>
+
+    <!-- 查询记录总数 -->
+    <select id="queryCountByParams" resultType="java.lang.Long" parameterType="map">
+        SELECT COUNT(1) FROM tb_stock
+        <include refid="Base_where_List" />
+    </select>
+
+    <!-- 查询记录列表(分页) -->
+    <select id="queryListByParams" parameterType="map" resultType="map">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_stock
+        <include refid="Base_where_List" />
+    </select>
+
+    <!-- 查询记录总数 -->
+    <select id="queryCount" resultType="java.lang.Long" parameterType="com.gaoan.forever.entity.TbStockEntity">
+        SELECT COUNT(1) FROM tb_stock
+        <include refid="Base_where_List" />
+    </select>
+
+    <!-- 查询记录列表 -->
+    <select id="queryStockList" parameterType="com.gaoan.forever.model.query.OrderQueryConditionModel" resultMap="StockResultMap">
+        SELECT 
+            t.*, 
+        	tc.color_name, 
+        	ts.size_name
+        FROM tb_stock t
+        INNER JOIN tb_color tc
+        ON t.color_id = tc.id
+        INNER JOIN tb_size ts
+        ON t.size_id = ts.id
+        <where>
+        	1 = 1
+			<if test="purchaseOrderName != null and purchaseOrderName != ''">
+				AND t.purchase_order_name = #{purchaseOrderName}
+			</if>	
+			<if test="goodsName != null and goodsName != ''">
+				AND t.goods_name = #{goodsName}
+			</if>
+			<if test="colorId != null">
+				AND t.color_id = #{colorId}
+			</if>
+			<if test="sizeId != null">
+				AND t.size_id = #{sizeId}
+			</if>
+			<if test="startTime != null and startTime != ''">
+				<![CDATA[AND to_char(t.create_time, 'yyyy-MM-dd') >= #{startTime}]]>
+			</if>
+			<if test="endTime != null and endTime != ''">
+				<![CDATA[ AND to_char(t.create_time, 'yyyy-MM-dd') <= #{endTime} ]]>
+			</if>
+		</where>
+        ORDER BY t.update_time DESC
+    </select>
+    
+    <!-- 查询进货单名称，去重 -->
+    <select id="queryPurchaseNameList" resultType="String">
+		SELECT
+			purchase_order_name
+		FROM
+			(
+				SELECT
+					purchase_order_name,
+					MIN(create_time) create_time
+				FROM
+					tb_stock
+				GROUP BY
+					purchase_order_name
+			) t
+		ORDER BY
+			t.create_time DESC
+    </select>
+    
+    <!-- 根据进货单名称查询商品列表 -->
+    <select id="queryGoodsList" parameterType="String" resultType="String">
+		SELECT
+			goods_name
+		FROM
+			(
+				SELECT
+					goods_name,
+					MIN(create_time) create_time
+				FROM
+					tb_stock
+		        WHERE 1 = 1
+		        <if test="purchaseOrderName != null and purchaseOrderName != ''">
+			        AND purchase_order_name = #{purchaseOrderName}
+		        </if>
+				GROUP BY
+					goods_name
+			) t
+		ORDER BY
+			t.create_time DESC
+    </select>
+    
+    <!-- 添加 -->
+    <insert id="insert" parameterType="com.gaoan.forever.entity.TbStockEntity" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_stock
+        (purchase_order_name,goods_name,color_id,size_id,quantity,avg_price,create_time,update_time)
+        VALUES
+        (#{purchaseOrderName},#{goodsName},#{colorId},#{sizeId},#{quantity},#{avgPrice},#{createTime},#{updateTime})
+    </insert>
+
+    <!-- 添加 (匹配有值的字段)-->
+    <insert id="insertSelective" parameterType="com.gaoan.forever.entity.TbStockEntity" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_stock
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="purchaseOrderName != null and purchaseOrderName != ''">
+            purchase_order_name,
+            </if>
+            <if test="goodsName != null and goodsName != ''">
+            goods_name,
+            </if>
+            <if test="colorId != null">
+            color_id,
+            </if>
+            <if test="sizeId != null">
+            size_id,
+            </if>
+            <if test="quantity != null">
+            quantity,
+            </if>
+            <if test="avgPrice != null">
+            avg_price,
+            </if>
+            create_time,
+            update_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="purchaseOrderName != null and purchaseOrderName != ''">
+            #{purchaseOrderName},
+            </if>
+            <if test="goodsName != null and goodsName != ''">
+            #{goodsName},
+            </if>
+            <if test="colorId != null">
+            #{colorId},
+            </if>
+            <if test="sizeId != null">
+            #{sizeId},
+            </if>
+            <if test="quantity != null">
+            #{quantity},
+            </if>
+            <if test="avgPrice != null">
+            #{avgPrice},
+            </if>
+            now(),
+            now()
+        </trim>
+    </insert>
+
+    <!-- 修 改 (匹配有值的字段)-->
+    <update id="updateByPrimaryKeySelective" parameterType="com.gaoan.forever.entity.TbStockEntity">
+        UPDATE tb_stock
+        <set>
+            <if test="purchaseOrderName != null and purchaseOrderName != ''">
+            purchase_order_name = #{purchaseOrderName},
+            </if>
+            <if test="goodsName != null and goodsName != ''">
+            goods_name = #{goodsName},
+            </if>
+            <if test="colorId != null">
+            color_id = #{colorId},
+            </if>
+            <if test="sizeId != null">
+            size_id = #{sizeId},
+            </if>
+            <if test="quantity != null">
+            quantity = #{quantity},
+            </if>
+            <if test="avgPrice != null">
+            avg_price = #{avgPrice},
+            </if>
+            <if test="createTime != null">
+            create_time = #{createTime},
+            </if>
+            update_time = now()
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 修 改-->
+    <update id="updateByPrimaryKey" parameterType="com.gaoan.forever.entity.TbStockEntity">
+        UPDATE tb_stock
+        <set>
+            purchase_order_name = #{purchaseOrderName},
+            goods_name = #{goodsName},
+            color_id = #{colorId},
+            size_id = #{sizeId},
+            quantity = #{quantity},
+            avg_price = #{avgPrice},
+            create_time = #{createTime},
+            update_time = now()
+        </set>
+        WHERE id = #{id}
+    </update>
+    
+    <!-- 减少库存-->
+    <update id="subtractQty">
+        UPDATE tb_stock
+        SET 
+            quantity = quantity - #{qty},
+            update_time = now()
+        WHERE id = #{id}
+        AND quantity >= #{qty}
+    </update>
+    
+    <!--增加库存-->
+    <update id="addQty">
+        UPDATE tb_stock
+        SET 
+            quantity = quantity + #{qty},
+            update_time = now()
+        WHERE id = #{id}
+    </update>
+
+    <!--根据主键删除-->
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        DELETE FROM tb_stock WHERE id = #{id}
+    </delete>
+    
+</mapper>

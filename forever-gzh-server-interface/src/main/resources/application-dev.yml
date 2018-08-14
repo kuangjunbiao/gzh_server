@@ -1,0 +1,34 @@
+# 服务配置
+server:
+ # 服务端口
+  port: 8061
+  error:
+    path: /error
+  tomcat:
+    max-threads: 1000
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://127.0.0.1:5432/forever
+    username: postgres
+    password: postgres
+
+forever:
+  defaultPassword: 12345678
+
+weixinapi:
+  protocol: https
+  host: sz.api.weixin.qq.com/
+  apiGetToken: cgi-bin/token
+  apiGetMenu: cgi-bin/menu/get
+  apiCreateMenu: cgi-bin/menu/create
+  apiDeleteMenu: cgi-bin/menu/delete
+  apiUploadTempMaterial: cgi-bin/media/upload
+  apiGetTempMaterial: cgi-bin/media/get
+  apiBatchGetMaterial: cgi-bin/material/batchget_material
+  apiAddMaterial: cgi-bin/material/add_material
+  #appId: wx4c62e4b2cb2dabe1
+  #appSecret: ee001fe2dbb5c69b7e31c64f1afd4852
+  appId: wxa28172874513474b
+  appSecret: 4e403d38bf117d905cdc89d2c3e41da3

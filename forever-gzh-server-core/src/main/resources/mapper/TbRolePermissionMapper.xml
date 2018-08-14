@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gaoan.forever.mapper.TbRolePermissionMapper">
+
+    <!-- Result Map -->
+    <resultMap id="BaseResultMap" type="com.gaoan.forever.entity.TbRolePermissionEntity" >
+        <result column="id" property="id" javaType="Long"/>
+        <result column="role_id" property="roleId" javaType="Long"/>
+        <result column="resources_id" property="resourcesId" javaType="Long"/>
+        <result column="create_time" property="createTime" javaType="java.util.Date"/>
+        <result column="update_time" property="updateTime" javaType="java.util.Date"/>
+    </resultMap>
+
+    <!-- 通用查询结果列-->
+    <sql id="Base_Column_List">
+	id,role_id,resources_id,create_time,update_time
+    </sql>
+    <!-- 通用WHERE条件 -->
+    <sql id="Base_where_List">
+        WHERE 1=1
+        <if test="id != null">
+            AND id = #{id}
+        </if>
+        <if test="roleId != null">
+            AND role_id = #{roleId}
+        </if>
+        <if test="resourcesId != null">
+            AND resources_id = #{resourcesId}
+        </if>
+        <if test="createTime != null">
+            AND create_time = #{createTime}
+        </if>
+        <if test="updateTime != null">
+            AND update_time = #{updateTime}
+        </if>
+    </sql>
+    
+    <!-- 查询(根据主键ID查询) -->
+    <select id="queryByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_role_permission
+        WHERE id = #{id}
+    </select>
+
+    <!-- 查询（根据实体查询） -->
+    <select id="queryInfoByEntity"  parameterType="com.gaoan.forever.entity.TbRolePermissionEntity" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_role_permission
+        <include refid="Base_where_List" />
+    </select>
+
+    <!-- 查询记录列表 -->
+    <select id="queryAllByParams" parameterType="map" resultType="map">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_role_permission
+        <include refid="Base_where_List" />
+        <if test="pager.orderCondition != null and pager.orderCondition != ''" >
+            ${pager.orderCondition}
+        </if>
+    </select>
+
+    <!-- 查询记录列表 -->
+    <select id="queryAll" parameterType="com.gaoan.forever.entity.TbRolePermissionEntity" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_role_permission
+        <include refid="Base_where_List" />
+        ORDER BY id
+    </select>
+
+    <!-- 查询记录总数 -->
+    <select id="queryCountByParams" resultType="java.lang.Long" parameterType="map">
+        SELECT COUNT(1) FROM tb_role_permission
+        <include refid="Base_where_List" />
+    </select>
+
+    <!-- 查询记录列表(分页) -->
+    <select id="queryListByParams" parameterType="map" resultType="map">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_role_permission
+        <include refid="Base_where_List" />
+    </select>
+
+    <!-- 查询记录总数 -->
+    <select id="queryCount" resultType="java.lang.Long" parameterType="com.gaoan.forever.entity.TbRolePermissionEntity">
+        SELECT COUNT(1) FROM tb_role_permission
+        <include refid="Base_where_List" />
+    </select>
+
+    <!-- 添加 -->
+    <insert id="insert" parameterType="com.gaoan.forever.entity.TbRolePermissionEntity" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_role_permission
+        (role_id,resources_id,create_time,update_time)
+        VALUES
+        (#{roleId},#{resourcesId},#{createTime},#{updateTime})
+    </insert>
+
+    <!-- 添加 (匹配有值的字段)-->
+    <insert id="insertSelective" parameterType="com.gaoan.forever.entity.TbRolePermissionEntity" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_role_permission
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="roleId != null">
+            role_id,
+            </if>
+            <if test="resourcesId != null">
+            resources_id,
+            </if>
+            create_time,
+            update_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="roleId != null">
+            #{roleId},
+            </if>
+            <if test="resourcesId != null">
+            #{resourcesId},
+            </if>
+            now(),
+            now()
+        </trim>
+    </insert>
+    
+    <!-- 批量添加 -->
+    <insert id="batchInsert" parameterType="java.util.List">
+        INSERT INTO tb_role_permission
+        (role_id,resources_id,create_time,update_time)
+        VALUES
+         <foreach collection="list" item="item" index="index" separator=",">  
+            (#{item.roleId},#{item.resourcesId},now(), now())
+         </foreach>
+    </insert>
+
+    <!-- 修 改 (匹配有值的字段)-->
+    <update id="updateByPrimaryKeySelective" parameterType="com.gaoan.forever.entity.TbRolePermissionEntity">
+        UPDATE tb_role_permission
+        <set>
+            <if test="roleId != null">
+            role_id = #{roleId},
+            </if>
+            <if test="resourcesId != null">
+            resources_id = #{resourcesId},
+            </if>
+            <if test="createTime != null">
+            create_time = #{createTime},
+            </if>
+            update_time = now()
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 修 改-->
+    <update id="updateByPrimaryKey" parameterType="com.gaoan.forever.entity.TbRolePermissionEntity">
+        UPDATE tb_role_permission
+        <set>
+            role_id = #{roleId},
+            resources_id = #{resourcesId},
+            update_time = now()
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!--根据主键删除-->
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        DELETE FROM tb_role_permission WHERE id = #{id}
+    </delete>
+    
+    <delete id="deleteByRoleId" parameterType="java.lang.Long">
+        DELETE FROM tb_role_permission WHERE role_id = #{roleId}
+    </delete>
+    
+    <delete id="deleteByPermissionId" parameterType="java.lang.Long">
+        DELETE FROM tb_role_permission WHERE resources_id = #{resourcesId}
+    </delete>
+    
+</mapper>
